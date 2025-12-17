@@ -3,6 +3,7 @@ import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import type { Metadata } from "next";
+import type { Prisma } from "@prisma/client";
 
 export const metadata: Metadata = {
   title: "Viewer Dashboard - GymSwap.ai",
@@ -16,7 +17,22 @@ export default async function ViewerDashboardPage() {
     redirect("/sign-in");
   }
 
-  const transactions = await prisma.transaction.findMany({
+  type TransactionWithListing = Prisma.TransactionGetPayload<{
+    include: {
+      listing: {
+        include: {
+          user: {
+            select: {
+              name: true;
+              email: true;
+            };
+          };
+        };
+      };
+    };
+  }>;
+
+  const transactions = (await prisma.transaction.findMany({
     where: {
       buyerId: user.id,
       status: "PAID",
@@ -36,7 +52,7 @@ export default async function ViewerDashboardPage() {
     orderBy: {
       paidAt: "desc",
     },
-  });
+  })) as TransactionWithListing[];
 
   const nextSteps = [
     { id: 1, label: "Email Seller", completed: false },
