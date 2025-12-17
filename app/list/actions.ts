@@ -75,7 +75,7 @@ export async function createListing(formData: FormData) {
     
     if (error instanceof z.ZodError) {
       return {
-        error: error.errors[0].message,
+        error: error.issues[0].message,
       };
     }
     console.error("Listing creation error:", error);
