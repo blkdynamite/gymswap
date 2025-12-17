@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import LegalNotice from "@/components/ui/legal-notice";
 
@@ -22,10 +23,12 @@ export default function Home() {
             type="video/mp4"
           />
           {/* Fallback image */}
-          <img
+          <Image
             src="https://images.pexels.com/photos/4164754/pexels-photo-4164754.jpeg?auto=compress&cs=tinysrgb&w=1920"
             alt="Gym background"
-            className="w-full h-full object-cover"
+            fill
+            className="object-cover"
+            unoptimized
           />
         </video>
         {/* Dark overlay with blur */}

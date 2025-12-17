@@ -38,7 +38,7 @@ export default function TermsPage() {
             <p className="text-gray-700 mt-4">
               <strong>Important:</strong> These fees are for platform services only. The actual
               membership transfer is an offline transaction between the buyer and seller, subject to
-              the gym's policies and approval. GymSwap.ai does not participate in, facilitate, or
+              the gym&apos;s policies and approval. GymSwap.ai does not participate in, facilitate, or
               guarantee the transfer process.
             </p>
           </section>

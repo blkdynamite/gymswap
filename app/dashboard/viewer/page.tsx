@@ -53,7 +53,7 @@ export default async function ViewerDashboardPage() {
 
       {transactions.length === 0 ? (
         <div className="rounded-lg border border-gray-200 bg-white p-12 text-center shadow-sm">
-          <p className="text-gray-600">You haven't unlocked any memberships yet.</p>
+          <p className="text-gray-600">You haven&apos;t unlocked any memberships yet.</p>
           <p className="mt-2 text-sm text-gray-500">
             Browse listings and pay the contact fee to unlock seller information.
           </p>
