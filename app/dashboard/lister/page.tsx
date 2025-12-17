@@ -46,8 +46,14 @@ export default async function ListerDashboardPage({ searchParams }: ListerDashbo
     },
   });
 
-  const activeListings = listings.filter((l) => l.isPublished && l.isAvailable);
-  const drafts = listings.filter((l) => !l.isPublished);
+  type ListingWithTransactions = typeof listings[0];
+  
+  const activeListings = listings.filter(
+    (l): l is ListingWithTransactions => l.isPublished && l.isAvailable
+  );
+  const drafts = listings.filter(
+    (l): l is ListingWithTransactions => !l.isPublished
+  );
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
