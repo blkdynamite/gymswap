@@ -45,9 +45,7 @@ export default async function ListerDashboardPage({ searchParams }: ListerDashbo
     orderBy: {
       createdAt: "desc",
     },
-  });
-
-  type ListingWithTransactions = Prisma.ListingGetPayload<{
+  }) as Array<Prisma.ListingGetPayload<{
     include: {
       transactions: {
         include: {
@@ -60,13 +58,13 @@ export default async function ListerDashboardPage({ searchParams }: ListerDashbo
         };
       };
     };
-  }>;
+  }>>;
   
   const activeListings = listings.filter(
-    (l): l is ListingWithTransactions => l.isPublished && l.isAvailable
+    (l) => l.isPublished && l.isAvailable
   );
   const drafts = listings.filter(
-    (l): l is ListingWithTransactions => !l.isPublished
+    (l) => !l.isPublished
   );
 
   return (
@@ -122,7 +120,7 @@ export default async function ListerDashboardPage({ searchParams }: ListerDashbo
           </div>
         ) : (
           <div className="space-y-4">
-            {activeListings.map((listing: ListingWithTransactions) => (
+            {activeListings.map((listing) => (
               <div
                 key={listing.id}
                 className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm"
