@@ -23,7 +23,22 @@ export default async function ListerDashboardPage({ searchParams }: ListerDashbo
     redirect("/sign-in");
   }
 
-  const listings = await prisma.listing.findMany({
+  type ListingWithTransactions = Prisma.ListingGetPayload<{
+    include: {
+      transactions: {
+        include: {
+          buyer: {
+            select: {
+              name: true;
+              email: true;
+            };
+          };
+        };
+      };
+    };
+  }>;
+
+  const listings = (await prisma.listing.findMany({
     where: {
       userId: user.id,
     },
@@ -45,20 +60,7 @@ export default async function ListerDashboardPage({ searchParams }: ListerDashbo
     orderBy: {
       createdAt: "desc",
     },
-  }) as Array<Prisma.ListingGetPayload<{
-    include: {
-      transactions: {
-        include: {
-          buyer: {
-            select: {
-              name: true;
-              email: true;
-            };
-          };
-        };
-      };
-    };
-  }>>;
+  })) as ListingWithTransactions[];
   
   const activeListings = listings.filter(
     (l) => l.isPublished && l.isAvailable
