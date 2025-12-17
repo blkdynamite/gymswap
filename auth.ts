@@ -1,10 +1,10 @@
-import NextAuth, { NextAuthOptions } from "next-auth";
+import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 
-export const authOptions: NextAuthOptions = {
-  secret: process.env.NEXTAUTH_SECRET,
+export const authOptions = {
+  secret: process.env.NEXTAUTH_SECRET || "fallback-secret-for-development",
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -18,9 +18,12 @@ export const authOptions: NextAuthOptions = {
             return null;
           }
 
+          const email = credentials.email as string;
+          const password = credentials.password as string;
+
           const user = await prisma.user.findUnique({
             where: {
-              email: credentials.email,
+              email: email,
             },
           });
 
@@ -29,7 +32,7 @@ export const authOptions: NextAuthOptions = {
           }
 
           const isPasswordValid = await bcrypt.compare(
-            credentials.password,
+            password,
             user.password
           );
 
@@ -54,10 +57,10 @@ export const authOptions: NextAuthOptions = {
     error: "/sign-in", // Redirect errors back to sign-in page
   },
   session: {
-    strategy: "jwt",
+    strategy: "jwt" as const,
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user }: { token: any; user: any }) {
       if (user) {
         token.id = user.id;
         token.email = user.email;
@@ -65,7 +68,7 @@ export const authOptions: NextAuthOptions = {
       }
       return token;
     },
-    async session({ session, token }) {
+    async session({ session, token }: { session: any; token: any }) {
       if (session.user) {
         session.user.id = token.id as string;
         session.user.email = token.email as string;
