@@ -3,6 +3,7 @@ import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import type { Metadata } from "next";
+import type { Prisma } from "@prisma/client";
 
 export const metadata: Metadata = {
   title: "Lister Dashboard - GymSwap.ai",
@@ -46,7 +47,20 @@ export default async function ListerDashboardPage({ searchParams }: ListerDashbo
     },
   });
 
-  type ListingWithTransactions = typeof listings[0];
+  type ListingWithTransactions = Prisma.ListingGetPayload<{
+    include: {
+      transactions: {
+        include: {
+          buyer: {
+            select: {
+              name: true;
+              email: true;
+            };
+          };
+        };
+      };
+    };
+  }>;
   
   const activeListings = listings.filter(
     (l): l is ListingWithTransactions => l.isPublished && l.isAvailable
@@ -108,7 +122,7 @@ export default async function ListerDashboardPage({ searchParams }: ListerDashbo
           </div>
         ) : (
           <div className="space-y-4">
-            {activeListings.map((listing) => (
+            {activeListings.map((listing: ListingWithTransactions) => (
               <div
                 key={listing.id}
                 className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm"
